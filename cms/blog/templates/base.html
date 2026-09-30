@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Marginalia{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Notes in the margins of a working life.{% endblock %}">
+  <link rel="alternate" type="application/rss+xml" title="Marginalia — RSS feed" href="{% url 'rss_feed' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+  <link rel="stylesheet" href="{% static 'css/write.css' %}">
+  {% block extra_head %}{% endblock %}
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="wrap masthead__row">
+      <a class="masthead__title" href="{% url 'home' %}">Marginalia</a>
+      <nav class="masthead__nav" aria-label="Primary">
+        <a href="{% url 'write' %}">Writing</a>
+        {% if request.user.user_type == 'admin' %}
+        <a href="{% url 'comment_moderation' %}">Approval</a>
+         {% endif %}
+
+        <div class="category-dropdown">
+
+    <button type="button" class="category-dropdown__button">
+        Categories
+    </button>
+
+    <div class="category-dropdown__menu">
+
+        {% for category in categories %}
+
+            <a href="{% url 'category' category.slug %}">
+                {{ category.name }}
+            </a>
+
+        {% empty %}
+
+            <span>No categories available</span>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+        {% if not user.is_authenticated %}
+                
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'register' %}">Register</a>
+        {% else %}
+        <a href="{% url 'logout' %}">Logout</a>
+
+        {% endif %}
+        <a href="{% url 'rss_feed' %}" class="masthead__feed" title="RSS feed">RSS</a>
+
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    {% block content %}
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+   
+
+{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap site-footer__row">
+      <p>Marginalia is written and kept by {{ site_author|default:"the author" }}. Est. {{ site_established|default:"2021" }}.</p>
+      <p><a href="{% url 'rss_feed' %}">RSS</a> &middot; <a href="{% url 'sitemap' %}">Sitemap</a></p>
+    </div>
+  </footer>
+<script>
+    const categoryDropdown = document.querySelector('.category-dropdown');
+    const categoryButton = document.querySelector('.category-dropdown__button');
+
+    categoryButton.addEventListener('click', function () {
+        categoryDropdown.classList.toggle('is-open');
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!categoryDropdown.contains(event.target)) {
+            categoryDropdown.classList.remove('is-open');
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,439 @@
+{% extends "base.html" %} 
+{% load static %}
+
+{% block title %}
+Write Post · Marginalia
+{% endblock %}
+
+{% block extra_head %}
+    {{ form.media }}
+{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/write.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="write">
+
+    <!-- Page Header -->
+    <div class="write__header">
+
+        <p class="write__breadcrumb">
+      
+            <a href="{% url 'home' %}">Dashboard</a>
+            /{% if object %}
+
+             Edit Post
+
+             {% else %}
+
+             New Post
+
+            {% endif %}
+        </p>
+
+        {% if object %}
+           <h1>Edit Post</h1>
+        {% else %}
+           <h1>Create a New Post</h1>
+       
+
+        <p class="write__description">
+            Create and publish a new blog post.
+        </p>
+ {% endif %}
+    </div>
+
+
+    <!-- Main Form -->
+    <form method="post"
+          enctype="multipart/form-data"
+          id="post-form">
+
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+
+        <div class="write__layout">
+
+    <!-- =========================
+         MAIN COLUMN
+    ========================== -->
+
+    <main class="write__main">
+
+        <!-- TITLE -->
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">
+                Post Title
+            </label>
+
+            {{ form.title }}
+            {{ form.title.errors }}
+        </div>
+
+
+        <!-- SLUG -->
+        <div class="form-group">
+            <label for="{{ form.slug.id_for_label }}">
+                Slug
+            </label>
+
+            {{ form.slug }}
+
+            <small>
+                Example: my-first-python-blog
+            </small>
+
+            {{ form.slug.errors }}
+        </div>
+
+
+        <!-- CONTENT -->
+        <div class="form-group">
+
+            <label for="{{ form.content.id_for_label }}">
+                Content
+            </label>
+
+            <div class="editor">
+                {{ form.content }}
+            </div>
+
+            {{ form.content.errors }}
+
+        </div>
+        <div class="field image-field">
+
+    <label for="{{ form.image.id_for_label }}">
+        Featured Image
+    </label>
+
+    <p class="field-help">
+        Upload an image for this post.
+    </p>
+
+    {{ form.image }}
+
+    {% if form.image.errors %}
+        <div class="form-error">
+            {{ form.image.errors }}
+        </div>
+    {% endif %}
+
+</div>
+
+        <!-- WORD COUNT -->
+        <p id="word-count">
+            0 words
+        </p>
+
+    </main>
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="write__sidebar">
+
+
+        <!-- AUTHOR -->
+        <div class="panel">
+
+            <h3>Author</h3>
+
+            <div class="author-card">
+
+                {% if request.user.author_profile.author_pic %}
+
+                    <img
+                        src="{{ request.user.author_profile.author_pic.url }}"
+                        alt="{{ request.user.username }}"
+                        class="author-card__avatar"
+                    >
+
+                {% else %}
+
+                    <div class="author-card__avatar author-card__avatar--placeholder">
+                        {{ request.user.username|first|upper }}
+                    </div>
+
+                {% endif %}
+
+
+                <div class="author-card__info">
+
+                    <div class="author-card__name">
+                        {{ request.user.username }}
+                    </div>
+
+                    <div class="author-card__role">
+
+                        {% if request.user.user_type == "admin" %}
+                            Administrator
+                        {% else %}
+                            Contributor
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if request.user.author_profile.author_bio %}
+
+                        <p class="author-card__bio">
+                            {{ request.user.author_profile.author_bio }}
+                        </p>
+
+                    {% endif %}
+
+
+                    {% if request.user.author_profile.author_social_link %}
+
+                        <a
+                            href="{{ request.user.author_profile.author_social_link }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Social Profile
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CATEGORY -->
+        <div class="panel">
+
+            <h3>Category</h3>
+
+            <div class="form-group">
+
+                {{ form.category }}
+                {{ form.category.errors }}
+
+            </div>
+
+        </div>
+
+
+        <!-- PUBLISH -->
+        <div class="panel">
+
+            <h3>Publish</h3>
+
+            <div class="form-group">
+
+                <label for="{{ form.status.id_for_label }}">
+                    Status
+                </label>
+
+                {{ form.status }}
+                {{ form.status.errors }}
+
+            </div>
+
+
+            <div
+                class="form-group"
+                id="scheduled-at-group"
+            >
+
+                <label for="{{ form.scheduled_at.id_for_label }}">
+                    Scheduled At
+                </label>
+
+                {{ form.scheduled_at }}
+                {{ form.scheduled_at.errors }}
+
+            </div>
+
+
+            <div class="form-group checkbox">
+
+                <label>
+                    {{ form.featured }}
+                    Featured Post
+                </label>
+
+                {{ form.featured.errors }}
+
+            </div>
+
+        </div>
+
+
+        <!-- TAGS -->
+        <div class="panel">
+
+            <h3>Tags</h3>
+
+            <div class="form-group">
+
+                <label for="{{ form.tags.id_for_label }}">
+                    Tags
+                </label>
+
+                {{ form.tags }}
+
+                <small>
+                    Add tags separated by commas.
+                </small>
+
+                {{ form.tags.errors }}
+
+            </div>
+
+        </div>
+
+
+        <!-- SAVE -->
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+
+            {% if object %}
+                Update Post
+            {% else %}
+                Save Post
+            {% endif %}
+
+        </button>
+
+
+    </aside>
+
+</div>
+
+    </form>
+
+</div>
+
+{% endblock %}
+
+
+
+{% block extra_js %}
+<script>
+
+    /* Scheduled At visibility */
+    var statusField = document.getElementById("id_status");
+    var scheduledAtGroup = document.getElementById("scheduled-at-group");
+
+    function toggleScheduledField() {
+
+        if (!statusField || !scheduledAtGroup) return;
+
+        if (statusField.value === "scheduled") {
+            scheduledAtGroup.style.display = "block";
+        } else {
+            scheduledAtGroup.style.display = "none";
+        }
+    }
+
+    toggleScheduledField();
+
+    if (statusField) {
+        statusField.addEventListener(
+            "change",
+            toggleScheduledField
+        );
+    }
+
+
+    /* CKEditor 4 Word Count */
+
+    function setupWordCount(editor) {
+
+        var wordCount =
+            document.getElementById("word-count");
+
+        if (!wordCount) return;
+
+        function updateWordCount() {
+
+            var text = editor.document
+                .getBody()
+                .getText()
+                .trim();
+
+            var words = text.length
+                ? text.split(/\s+/).length
+                : 0;
+
+            wordCount.textContent =
+                words +
+                (words === 1 ? " word" : " words");
+        }
+
+        editor.on("change", updateWordCount);
+
+        updateWordCount();
+    }
+
+
+    if (typeof CKEDITOR !== "undefined") {
+
+        if (CKEDITOR.instances.id_content) {
+
+            setupWordCount(
+                CKEDITOR.instances.id_content
+            );
+
+        } else {
+
+            CKEDITOR.on("instanceReady", function (event) {
+
+                if (event.editor.name === "id_content") {
+                    setupWordCount(event.editor);
+                }
+
+            });
+
+        }
+    }
+
+
+    /* Auto Slug */
+
+    var titleField =
+        document.getElementById("id_title");
+
+    var slugField =
+        document.getElementById("id_slug");
+
+    if (titleField && slugField) {
+
+        var slugChanged = false;
+
+        slugField.addEventListener("input", function () {
+            slugChanged = true;
+        });
+
+        titleField.addEventListener("input", function () {
+
+            if (slugChanged) return;
+
+            slugField.value = titleField.value
+                .toLowerCase()
+                .trim()
+                .replace(/[^a-z0-9\s-]/g, "")
+                .replace(/\s+/g, "-")
+                .replace(/-+/g, "-");
+
+        });
+    }
+
+</script>
+{% endblock %}

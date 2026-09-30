@@ -1,0 +1,457 @@
+/* ============================================================
+   Marginalia — Write / Edit Post
+   ============================================================ */
+
+.write {
+    padding-top: 42px;
+    padding-bottom: 80px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.write__header {
+    max-width: 760px;
+    margin-bottom: 38px;
+}
+
+.write__breadcrumb {
+    margin: 0 0 16px;
+    color: var(--ink-faint);
+    font-family: var(--sans);
+    font-size: 14px;
+}
+
+.write__breadcrumb a {
+    color: var(--moss);
+    text-decoration: none;
+}
+
+.write__breadcrumb a:hover {
+    color: var(--moss-dark);
+    text-decoration: underline;
+}
+
+.write__header h1 {
+    margin: 0 0 10px;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 52px);
+    font-weight: 500;
+    line-height: 1.05;
+}
+
+.write__description {
+    margin: 0;
+    color: var(--ink-soft);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+
+.write__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 42px;
+}
+
+.write__main {
+    min-width: 0;
+}
+
+.write__sidebar {
+    min-width: 0;
+}
+
+
+/* ============================================================
+   FORM GROUP
+   ============================================================ */
+
+.form-group {
+    margin-bottom: 26px;
+}
+
+.form-group > label {
+    display: block;
+    margin-bottom: 9px;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-group small {
+    display: block;
+    margin-top: 7px;
+    color: var(--ink-faint);
+    font-family: var(--sans);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   INPUTS
+   ============================================================ */
+
+.write input[type="text"],
+.write input[type="url"],
+.write input[type="email"],
+.write input[type="datetime-local"],
+.write input[type="date"],
+.write textarea,
+.write select {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    padding: 12px 14px;
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.write input[type="text"]:focus,
+.write input[type="url"]:focus,
+.write input[type="email"]:focus,
+.write input[type="datetime-local"]:focus,
+.write input[type="date"]:focus,
+.write textarea:focus,
+.write select:focus {
+    border-color: var(--moss);
+    box-shadow: 0 0 0 3px rgba(63, 93, 78, 0.10);
+}
+
+
+/* ============================================================
+   TITLE
+   ============================================================ */
+
+#id_title {
+    min-height: 52px;
+    font-family: var(--serif);
+    font-size: 21px;
+    font-weight: 500;
+}
+
+
+/* ============================================================
+   SLUG
+   ============================================================ */
+
+#id_slug {
+    min-height: 46px;
+    color: var(--ink-soft);
+    font-size: 14px;
+}
+
+
+/* ============================================================
+   CKEDITOR 4
+   ============================================================ */
+
+.editor {
+    width: 100%;
+    min-width: 0;
+}
+
+.editor .cke {
+    width: 100% !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 6px !important;
+    overflow: hidden;
+    box-shadow: none !important;
+}
+
+.editor .cke_top {
+    background: var(--paper-dim) !important;
+    border-bottom: 1px solid var(--line) !important;
+    padding: 8px !important;
+}
+
+.editor .cke_bottom {
+    background: var(--paper-dim) !important;
+    border-top: 1px solid var(--line) !important;
+}
+
+.editor .cke_contents {
+    background: var(--paper) !important;
+}
+
+.editor .cke_wysiwyg_frame,
+.editor .cke_wysiwyg_div {
+    background: var(--paper) !important;
+}
+
+.editor iframe {
+    width: 100% !important;
+}
+
+.editor .cke_editable {
+    font-family: var(--serif) !important;
+    font-size: 17px !important;
+    line-height: 1.75 !important;
+    color: var(--ink) !important;
+    padding: 22px !important;
+}
+
+
+/* ============================================================
+   WORD COUNT
+   ============================================================ */
+
+#word-count {
+    margin: -10px 0 30px;
+    color: var(--ink-faint);
+    font-family: var(--sans);
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   SIDEBAR PANELS
+   ============================================================ */
+
+.panel {
+    margin-bottom: 22px;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+}
+
+.panel h3 {
+    margin: 0 0 18px;
+    padding-bottom: 11px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 500;
+}
+
+
+/* ============================================================
+   AUTHOR CARD
+   ============================================================ */
+
+.author-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+}
+
+.author-card__avatar {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--line);
+}
+
+.author-card__avatar--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--moss);
+    color: #fff;
+    font-family: var(--serif);
+    font-size: 22px;
+}
+
+.author-card__info {
+    min-width: 0;
+}
+
+.author-card__name {
+    margin-bottom: 2px;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.author-card__role {
+    margin-bottom: 8px;
+    color: var(--ink-faint);
+    font-family: var(--sans);
+    font-size: 12px;
+}
+
+.author-card__bio {
+    margin: 8px 0;
+    color: var(--ink-soft);
+    font-family: var(--sans);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.author-card__info > a {
+    color: var(--moss);
+    font-family: var(--sans);
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.author-card__info > a:hover {
+    text-decoration: underline;
+}
+
+
+/* ============================================================
+   CATEGORY
+   ============================================================ */
+
+.write__sidebar select {
+    min-height: 44px;
+    cursor: pointer;
+}
+
+
+/* ============================================================
+   PUBLISH
+   ============================================================ */
+
+#scheduled-at-group {
+    margin-top: 18px;
+}
+
+.checkbox {
+    margin-top: 12px;
+    margin-bottom: 0;
+}
+
+.checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0;
+    color: var(--ink-soft);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--moss);
+}
+
+
+/* ============================================================
+   TAGS
+   ============================================================ */
+
+#id_tags {
+    width: 100%;
+}
+
+
+/* ============================================================
+   ERRORS
+   ============================================================ */
+
+.errorlist {
+    margin: 7px 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--coral-dark);
+    font-family: var(--sans);
+    font-size: 12px;
+}
+
+.errorlist li {
+    margin-bottom: 3px;
+}
+
+
+/* ============================================================
+   SAVE BUTTON
+   ============================================================ */
+
+.btn {
+    width: 100%;
+    min-height: 48px;
+    border: 0;
+    border-radius: 6px;
+    padding: 12px 18px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease;
+}
+
+.btn-primary {
+    background: var(--moss);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--moss-dark);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 800px) {
+
+    .write__layout {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .write__sidebar {
+        width: 100%;
+    }
+
+    .write__header {
+        margin-bottom: 30px;
+    }
+}
+
+
+@media (max-width: 520px) {
+
+    .write {
+        padding-top: 28px;
+        padding-bottom: 55px;
+    }
+
+    .write__header h1 {
+        font-size: 36px;
+    }
+
+    .panel {
+        padding: 16px;
+    }
+
+    .editor .cke_editable {
+        padding: 15px !important;
+    }
+}

@@ -1,0 +1,341 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ category.name }} · Marginalia{% endblock %}
+
+{% block meta_description %}
+{{ category.description|default:"Posts filed under "|add:category.name }}
+{% endblock %}
+{% block extra_head %}
+  <link
+    rel="alternate"
+    type="application/rss+xml"
+    title="Marginalia — {{ category.name }}"
+    href="{% url 'category' category.slug %}"
+  >
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/category.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="wrap">
+
+  <!-- =====================================================
+       CATEGORY HEADER
+  ====================================================== -->
+
+  <header class="cat-header">
+
+    <div class="cat-header__row">
+
+      <div>
+
+        <h1 class="cat-header__title">
+          {{ category.name }}
+        </h1>
+
+        {% if category.description %}
+          <p class="cat-header__desc">
+            {{ category.description }}
+          </p>
+        {% endif %}
+
+      </div>
+
+
+      <p class="cat-header__count">
+
+        {{ page_obj.paginator.count }}
+
+        <span>
+          post{{ page_obj.paginator.count|pluralize }}
+        </span>
+
+      </p>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       ARCHIVE MONTHS
+  ====================================================== -->
+
+  {% if archive_months %}
+
+    <nav class="cat-archive">
+
+      <a
+        href="{% url 'category' category.slug %}"
+        class="{% if not selected_month %}is-active{% endif %}"
+      >
+        All
+      </a>
+
+      {% for month in archive_months %}
+
+        <span class="cat-archive__sep">/</span>
+
+        <a
+          href="?month={{ month.value }}"
+          class="{% if selected_month == month.value %}is-active{% endif %}"
+        >
+          {{ month.label }} ({{ month.count }})
+        </a>
+
+      {% endfor %}
+
+    </nav>
+
+  {% endif %}
+
+
+  <!-- =====================================================
+       POSTS
+  ====================================================== -->
+
+{% if posts %}
+
+    {# ================= FEATURED / LATEST POST ================= #}
+    {% for post in posts %}
+        {% if forloop.first %}
+
+            <article class="cat-feature">
+
+                {% if post.image %}
+                    <a class="cat-feature__media" href="{{ post.get_absolute_url }}">
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                    </a>
+                {% endif %}
+
+                <div class="cat-feature__body">
+
+                    <p class="cat-feature__date">
+                        Latest in {{ category.name }}
+                        {% if post.published_at %}
+                            · {{ post.published_at|date:"F j, Y" }}
+                        {% endif %}
+                    </p>
+
+                    <h2 class="cat-feature__title">
+                        <a href="{{ post.get_absolute_url }}">
+                            {{ post.title }}
+                        </a>
+                    </h2>
+
+                    <p class="cat-feature__excerpt">
+                        {% if post.excerpt %}
+                            {{ post.excerpt }}
+                        {% else %}
+                            {{ post.content|striptags|truncatewords:45 }}
+                        {% endif %}
+                    </p>
+
+                    <div class="cat-feature__foot">
+
+                        {% if post.author.author_pic %}
+                            <img
+                                src="{{ post.author.author_pic.url }}"
+                                alt="{{ post.author.author.username }}"
+                            >
+                        {% else %}
+                            <div class="cat-author-placeholder">
+                                {{ post.author.author.username|first|upper }}
+                            </div>
+                        {% endif %}
+
+                        <p class="cat-feature__author">
+                            <strong>Author:</strong>
+                            {{ post.author.author.username }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        {% endif %}
+    {% endfor %}
+
+
+    {# ================= OTHER POSTS ================= #}
+
+    {% if posts|length > 1 %}
+
+        <div class="cat-grid">
+
+            {% for post in posts %}
+
+                {% if not forloop.first %}
+
+                    <article class="cat-card">
+
+                        {% if post.image %}
+                            <a
+                                class="cat-card__media"
+                                href="{{ post.get_absolute_url }}"
+                            >
+                                <img
+                                    src="{{ post.image.url }}"
+                                    alt="{{ post.title }}"
+                                >
+                            </a>
+                        {% endif %}
+
+                        <div>
+
+                            <p class="cat-card__date">
+                                {% if post.published_at %}
+                                    {{ post.published_at|date:"M j, Y" }}
+                                {% endif %}
+                            </p>
+
+                            <h3 class="cat-card__title">
+                                <a href="{{ post.get_absolute_url }}">
+                                    {{ post.title }}
+                                </a>
+                            </h3>
+
+                            <p class="cat-card__excerpt">
+                                {% if post.excerpt %}
+                                    {{ post.excerpt }}
+                                {% else %}
+                                    {{ post.content|striptags|truncatewords:25 }}
+                                {% endif %}
+                            </p>
+
+                            <p class="cat-card__author">
+                                {{ post.author.author.username }}
+                            </p>
+
+                        </div>
+
+                    </article>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+{% else %}
+
+    <div class="cat-empty">
+        <p>No posts in “{{ category.name }}” yet.</p>
+
+        <a href="{% url 'home' %}" class="hero__continue">
+            Back to all posts →
+        </a>
+    </div>
+
+{% endif %}
+
+  <!-- =====================================================
+       PAGINATION
+  ====================================================== -->
+
+  {% if page_obj.paginator.num_pages > 1 %}
+
+    <div class="cat-pagination">
+
+      {% if page_obj.has_previous %}
+
+        <a
+          href="?page={{ page_obj.previous_page_number }}"
+        >
+          ← Newer
+        </a>
+
+      {% else %}
+
+        <span></span>
+
+      {% endif %}
+
+
+      <span class="cat-pagination__status">
+
+        Page {{ page_obj.number }}
+        of
+        {{ page_obj.paginator.num_pages }}
+
+      </span>
+
+
+      {% if page_obj.has_next %}
+
+        <a
+          href="?page={{ page_obj.next_page_number }}"
+        >
+          Older →
+        </a>
+
+      {% else %}
+
+        <span></span>
+
+      {% endif %}
+
+    </div>
+
+  {% endif %}
+
+
+  <!-- =====================================================
+       SUBSCRIPTION
+  ====================================================== -->
+
+  <div class="subscribe-strip">
+
+    <p class="subscribe-strip__heading">
+      Stay updated
+    </p>
+
+    <p class="subscribe-strip__text">
+      Get an email when a new post is published.
+    </p>
+
+
+    <form
+      class="subscribe-form"
+      method="post"
+      action="{% url 'subscribe' %}"
+    >
+
+      {% csrf_token %}
+
+      <label
+        for="subscribe-email"
+        class="visually-hidden"
+      >
+        Email address
+      </label>
+
+      <input
+        type="email"
+        name="email"
+        id="subscribe-email"
+        placeholder="you@example.com"
+        required
+      >
+
+      <button type="submit">
+        Subscribe
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+{% endblock %}

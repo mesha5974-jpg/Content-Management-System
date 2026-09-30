@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Tag · {{ view.kwargs.slug }} · Marginalia
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/tag_posts.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="wrap tag-page">
+
+    <header class="tag-page__header">
+
+        <p class="tag-page__label">
+            TAG
+        </p>
+
+        <h1>
+            #{{ view.kwargs.slug }}
+        </h1>
+
+        <p>
+            Posts tagged with this topic.
+        </p>
+
+    </header>
+
+
+    <section class="tag-posts">
+
+        {% for post in posts %}
+
+            <article class="tag-post">
+
+                <h2>
+                    <a href="{% url 'post_detail' post.slug %}">
+                        {{ post.title }}
+                    </a>
+                </h2>
+
+                <p class="tag-post__date">
+                    {{ post.published_at|date:"F d, Y" }}
+                </p>
+
+                <p class="tag-post__excerpt">
+                    {{ post.content|striptags|truncatewords:30 }}
+                </p>
+
+            </article>
+
+        {% empty %}
+
+            <div class="tag-posts__empty">
+
+                <h2>No posts found</h2>
+
+                <p>
+                    There are no published posts with this tag.
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    </section>
+
+</div>
+
+{% endblock %}

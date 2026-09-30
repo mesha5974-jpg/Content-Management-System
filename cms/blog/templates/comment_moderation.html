@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/blog.css' %}">
+{% endblock %}
+
+{% block title %}
+Comment Moderation · Marginalia
+{% endblock %}
+
+{% block content %}
+
+<section class="moderation">
+
+    <h1>Comment Moderation</h1>
+
+    <p>
+        Review comments before they appear on your posts.
+    </p>
+
+    {% if comments %}
+
+        {% for comment in comments %}
+
+            <article class="moderation-comment">
+
+                <div class="moderation-comment__header">
+
+                    <strong>
+                        {{ comment.user.username }}
+                    </strong>
+
+                    <span>
+                        {{ comment.created_at|timesince }} ago
+                    </span>
+
+                </div>
+
+                <p>
+                    <strong>Post:</strong>
+                    {{ comment.post.title }}
+                </p>
+
+                <p>
+                    {{ comment.comment }}
+                </p>
+
+                <div class="moderation-comment__actions">
+
+                    <form
+                        method="post"
+                        action="{% url 'approve_comment' comment.pk %}"
+                    >
+                        {% csrf_token %}
+
+                        <button type="submit">
+                            Approve
+                        </button>
+                    </form>
+
+                    <form
+                        method="post"
+                        action="{% url 'reject_comment' comment.pk %}"
+                    >
+                        {% csrf_token %}
+
+                        <button type="submit">
+                            Reject
+                        </button>
+                    </form>
+
+                </div>
+
+            </article>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>
+            No pending comments.
+        </p>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

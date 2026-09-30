@@ -1,0 +1,119 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create an account — Marginalia</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="wrap masthead__row">
+      <a class="masthead__title" href="{% url 'home' %}">Marginalia</a>
+      <nav class="masthead__nav" aria-label="Main">
+        <a href="{% url 'home' %}">Home</a>
+        <a class="masthead__feed" href="{% url 'rss_feed' %}">RSS</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap auth">
+    <div class="auth__card">
+      <h1 class="auth__title">Create an account</h1>
+      <p class="auth__lede">Comment on posts and save the ones you want to come back to.</p>
+
+      <form class="auth-form" action="" method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="form-errors" role="alert">
+          {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="field">
+          <label for="id_username">Username</label>
+          <input type="text" id="id_username" name="username"
+                 value="{{ form.username.value|default_if_none:'' }}"
+                 autocomplete="username" maxlength="150" required
+                 {% if form.username.errors %}aria-invalid="true"{% endif %}
+                 aria-describedby="username-hint username-error">
+          <p class="field__hint" id="username-hint">Letters, digits and @/./+/-/_ only.</p>
+          <p class="field__error" id="username-error" role="alert">{% for error in form.username.errors %}{{ error }} {% endfor %}</p>
+        </div>
+
+        <div class="field">
+          <label for="id_email">Email address</label>
+          <input type="email" id="id_email" name="email"
+                 value="{{ form.email.value|default_if_none:'' }}"
+                 autocomplete="email" placeholder="you@example.com"
+                 {% if form.email.field.required %}required{% endif %}
+                 {% if form.email.errors %}aria-invalid="true"{% endif %}
+                 aria-describedby="email-error">
+          <p class="field__error" id="email-error" role="alert">{% for error in form.email.errors %}{{ error }} {% endfor %}</p>
+        </div>
+
+        <div class="field">
+          <label for="id_phone">Phone number</label>
+          <input type="tel" id="id_phone" name="phone"
+                 value="{{ form.phone.value|default_if_none:'' }}"
+                 autocomplete="tel" inputmode="tel"
+                 {% if form.phone.field.required %}required{% endif %}
+                 {% if form.phone.errors %}aria-invalid="true"{% endif %}
+                 aria-describedby="phone-error">
+          <p class="field__error" id="phone-error" role="alert">{% for error in form.phone.errors %}{{ error }} {% endfor %}</p>
+        </div>
+
+        <div class="field">
+          <label for="id_password1">Password</label>
+          <div class="field__pw">
+            <input type="password" id="id_password1" name="password1"
+                   autocomplete="new-password" minlength="8" required
+                   {% if form.password1.errors %}aria-invalid="true"{% endif %}
+                   aria-describedby="password1-hint password1-error">
+            <button type="button" class="pw-toggle" aria-controls="id_password1"
+                    aria-pressed="false">Show</button>
+          </div>
+          <p class="field__hint" id="password1-hint">At least 8 characters. Avoid common passwords and all-number passwords.</p>
+          <p class="field__error" id="password1-error" role="alert">{% for error in form.password1.errors %}{{ error }} {% endfor %}</p>
+        </div>
+
+        <div class="field">
+          <label for="id_password2">Confirm password</label>
+          <div class="field__pw">
+            <input type="password" id="id_password2" name="password2"
+                   autocomplete="new-password" required
+                   {% if form.password2.errors %}aria-invalid="true"{% endif %}
+                   aria-describedby="password2-error">
+            <button type="button" class="pw-toggle" aria-controls="id_password2"
+                    aria-pressed="false">Show</button>
+          </div>
+          <p class="field__error" id="password2-error" role="alert">{% for error in form.password2.errors %}{{ error }} {% endfor %}</p>
+        </div>
+
+        <button type="submit" class="btn">Create account</button>
+      </form>
+
+      <p class="auth__alt">
+        Already have an account? <a href="{% url 'login' %}">Log in</a>
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap site-footer__row">
+      <span>&copy; 2026 Marginalia</span>
+      <span><a href="/privacy/">Privacy</a></span>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/auth.js' %}"></script>
+</body>
+</html>

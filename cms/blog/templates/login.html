@@ -1,0 +1,86 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log in — Marginalia</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="wrap masthead__row">
+      <a class="masthead__title" href="/">Marginalia</a>
+      <nav class="masthead__nav" aria-label="Main">
+        <a href="{% url 'home' %}">Home</a>
+        
+        <a class="masthead__feed" href="{% url 'rss_feed' %}">RSS</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap auth">
+    <div class="auth__card">
+      <h1 class="auth__title">Log in</h1>
+      <p class="auth__lede">Welcome back. Pick up where you left off.</p>
+
+      <form class="auth-form" action="" method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="form-errors" role="alert">
+          {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="field">
+          <label for="id_email">Email address</label>
+          <input type="email" id="id_email" name="email"
+                 value="{{ form.email.value|default_if_none:'' }}"
+                 autocomplete="email" placeholder="you@example.com" required
+                 {% if form.email.errors %}aria-invalid="true"{% endif %}
+                 aria-describedby="email-error">
+          <p class="field__error" id="email-error" role="alert">{% for error in form.email.errors %}{{ error }} {% endfor %}</p>
+        </div>
+
+        <div class="field">
+          <div class="field__row">
+            <label for="id_password">Password</label>
+            <a href="/forgot-password/">Forgot password?</a>
+          </div>
+          <div class="field__pw">
+            <input type="password" id="id_password" name="password"
+                   autocomplete="current-password" required
+                   {% if form.password.errors %}aria-invalid="true"{% endif %}
+                   aria-describedby="password-error">
+            <button type="button" class="pw-toggle" aria-controls="id_password"
+                    aria-pressed="false">Show</button>
+          </div>
+          <p class="field__error" id="password-error" role="alert">{% for error in form.password.errors %}{{ error }} {% endfor %}</p>
+        </div>
+
+        <button type="submit" class="btn">Log in</button>
+      </form>
+
+      <p class="auth__alt">
+        New here? <a href="{% url 'register' %}">Create an account</a>
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap site-footer__row">
+      <span>&copy; 2026 Marginalia</span>
+      <span><a href="/privacy/">Privacy</a></span>
+    </div>
+  </footer>
+
+  <script src="{% static 'css/auth.js' %}"></script>
+</body>
+</html>

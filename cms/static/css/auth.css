@@ -1,0 +1,234 @@
+/* ============================================================
+   Marginalia — login / register styles
+   Extends blog.css. Load blog.css first, then this file.
+   Uses only the tokens defined in blog.css, plus one error colour.
+   ============================================================ */
+
+:root {
+  --error: #9B3B2B;
+}
+
+.auth {
+  padding: 56px 0 80px;
+}
+
+.auth__card {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.auth__title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(1.9rem, 4vw, 2.4rem);
+  line-height: 1.15;
+  margin: 0 0 10px;
+}
+
+.auth__lede {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0 0 32px;
+}
+
+/* ---------- Form ---------- */
+
+.auth-form {
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+.field label {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.field__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.field__row label {
+  margin-bottom: 0;
+}
+.field__row a {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.field input[type="text"],
+.field input[type="email"],
+.field input[type="tel"],
+.field input[type="password"] {
+  display: block;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  background: var(--paper-dim);
+  border-radius: 3px;
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: var(--ink);
+}
+.field input::placeholder {
+  color: var(--ink-faint);
+}
+.field input:hover {
+  border-color: var(--ink-faint);
+}
+.field input:focus {
+  border-color: var(--moss-dark);
+  background: var(--paper);
+}
+.field input[aria-invalid="true"] {
+  border-color: var(--error);
+}
+
+.field__hint {
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  margin: 6px 0 0;
+}
+
+.field__error {
+  font-size: 0.85rem;
+  color: var(--error);
+  margin: 6px 0 0;
+}
+.field__error:empty {
+  display: none;
+}
+
+/* Form-level errors from the server */
+
+.form-errors {
+  margin: 0 0 24px;
+  padding: 12px 14px;
+  border: 1px solid var(--error);
+  border-radius: 3px;
+  background: var(--paper-dim);
+  color: var(--error);
+  font-size: 0.92rem;
+}
+.form-errors p {
+  margin: 0;
+}
+.form-errors p + p {
+  margin-top: 6px;
+}
+
+/* Password field with show/hide toggle */
+
+.field__pw {
+  position: relative;
+}
+.field__pw input {
+  padding-right: 64px !important;
+}
+.pw-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  padding: 5px 8px;
+  border: 0;
+  background: transparent;
+  border-radius: 3px;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.pw-toggle:hover {
+  color: var(--moss-dark);
+  text-decoration: underline;
+  text-decoration-color: var(--ochre);
+  text-underline-offset: 3px;
+}
+
+/* Checkbox */
+
+.check {
+  margin-bottom: 24px;
+}
+.check label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.check input[type="checkbox"] {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  margin: 2px 0 0;
+  accent-color: var(--moss);
+}
+.check input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--moss-dark);
+  outline-offset: 2px;
+}
+
+/* Primary button */
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--moss-dark);
+  background: var(--moss);
+  color: var(--paper);
+  border-radius: 3px;
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.btn:hover {
+  background: var(--moss-dark);
+}
+.btn:focus-visible {
+  outline: 2px solid var(--moss-dark);
+  outline-offset: 2px;
+}
+
+/* Switch between login and register */
+
+.auth__alt {
+  margin: 28px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+.auth__alt a {
+  font-weight: 500;
+  border-bottom: 1.5px solid var(--ochre);
+  padding-bottom: 1px;
+}
+.auth__alt a:hover {
+  text-decoration: none;
+  border-bottom-color: var(--moss-dark);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 760px) {
+  .auth {
+    padding: 40px 0 56px;
+  }
+}
