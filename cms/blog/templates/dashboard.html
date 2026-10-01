@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My posts &middot; Marginalia{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="wrap">
+  <div class="dash">
+
+    <div class="dash__header">
+      <div>
+        <h1 class="dash__title">My posts</h1>
+        <p class="dash__subtitle">Everything you've written &mdash; drafts, scheduled, and published.</p>
+      </div>
+      <a href="{% url 'write' %}" class="dash__new">New post</a>
+    </div>
+
+    <nav class="dash-tabs">
+      <a href="{% url 'dashboard' %}" class="{% if not status_filter %}is-active{% endif %}">
+        All <span class="tab-count">{{ total_count }}</span>
+      </a>
+      <a href="?status=draft" class="{% if status_filter == 'draft' %}is-active{% endif %}">
+        Draft <span class="tab-count">{{ draft_count }}</span>
+      </a>
+      <a href="?status=scheduled" class="{% if status_filter == 'scheduled' %}is-active{% endif %}">
+        Scheduled <span class="tab-count">{{ scheduled_count }}</span>
+      </a>
+      <a href="?status=published" class="{% if status_filter == 'published' %}is-active{% endif %}">
+        Published <span class="tab-count">{{ published_count }}</span>
+      </a>
+    </nav>
+
+    {% if posts %}
+    <ul class="dash-list">
+      {% for post in posts %}
+      <li class="dash-row" id="post-{{ post.id }}">
+        <div class="dash-row__top">
+          <div class="dash-row__main">
+            <h2 class="dash-row__title">
+              {% if post.status == "published" %}
+                <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+              {% else %}
+                <a href="{% url 'post_edit' post.slug %}">{{ post.title }}</a>
+              {% endif %}
+            </h2>
+            <p class="dash-row__meta">
+              <span class="status-tag status-tag--{{ post.status }}">{{ post.get_status_display }}</span>
+              {% if post.status == "scheduled" %}
+                <span class="dot dash-row__scheduled">Goes live {{ post.scheduled_at|date:"M j, Y \a\t g:i A" }}</span>
+              {% elif post.status == "published" %}
+                <span class="dot">Published {{ post.published_at|date:"M j, Y" }}</span>
+              {% else %}
+                <span class="dot">Last edited {{ post.updated_at|timesince }} ago</span>
+              {% endif %}
+              {% if post.categories.first %}
+                <span class="dot">{{ post.categories.first.name }}</span>
+              {% endif %}
+            </p>
+          </div>
+
+          <div class="dash-row__actions">
+            {% if post.status != "published" %}
+            <form method="post" action="{% url 'post_publish' post.slug %}">
+              {% csrf_token %}
+              <button type="submit" class="dash-btn dash-btn--publish">Publish now</button>
+            </form>
+
+            <button type="button"
+                    class="dash-btn dash-btn--schedule js-schedule-toggle"
+                    data-target="scheduler-{{ post.id }}">
+              {% if post.status == "scheduled" %}Reschedule{% else %}Schedule{% endif %}
+            </button>
+            {% endif %}
+
+            <a href="{% url 'post_edit' post.slug %}" class="dash-btn" title="Edit post" aria-label="Edit post">&#9999;&#65039;</a>
+
+            <form method="post" action="{% url 'post_delete' post.slug %}"
+                  onsubmit="return confirm('Delete &#8220;{{ post.title|escapejs }}&#8221;? This can&#8217;t be undone.');">
+              {% csrf_token %}
+              <button type="submit" class="dash-btn dash-btn--delete" title="Delete post" aria-label="Delete post">&#128465;&#65039;</button>
+            </form>
+          </div>
+        </div>
+
+        {% if post.status != "published" %}
+        <form method="post" action="{% url 'post_schedule' post.slug %}"
+              class="dash-row__scheduler" id="scheduler-{{ post.id }}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <div class="dash-row__scheduler-field">
+            <label for="date-{{ post.id }}">Date</label>
+            <input type="date" name="scheduled_date" id="date-{{ post.id }}"
+                   value="{{ post.scheduled_at|date:'Y-m-d' }}" required>
+          </div>
+          <div class="dash-row__scheduler-field">
+            <label for="time-{{ post.id }}">Time</label>
+            <input type="time" name="scheduled_time" id="time-{{ post.id }}"
+                   value="{{ post.scheduled_at|date:'H:i' }}" required>
+          </div>
+          <div class="dash-row__scheduler-actions">
+            <button type="button" class="dash-row__scheduler-cancel js-schedule-cancel">Cancel</button>
+            <button type="submit" class="dash-row__scheduler-confirm">Confirm</button>
+          </div>
+        </form>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% if is_paginated %}
+    <nav class="pagination" aria-label="Post pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">Newer</a>
+      {% else %}<span></span>{% endif %}
+      <span class="pagination__status">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">Older</a>
+      {% else %}<span></span>{% endif %}
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="dash-empty">
+      {% if status_filter %}
+        <p>No {{ status_filter }} posts.</p>
+      {% else %}
+        <p>You haven't written anything yet.</p>
+      {% endif %}
+      <a href="{% url 'write' %}" class="dash__new">Write your first post</a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  "use strict";
+
+  document.querySelectorAll(".js-schedule-toggle").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var panel = document.getElementById(btn.dataset.target);
+      if (!panel) return;
+      var wasOpen = panel.classList.contains("is-open");
+
+      // Close any other open scheduler panel first.
+      document.querySelectorAll(".dash-row__scheduler.is-open").forEach(function (p) {
+        p.classList.remove("is-open");
+      });
+      document.querySelectorAll(".js-schedule-toggle.is-active").forEach(function (b) {
+        b.classList.remove("is-active");
+      });
+
+      if (!wasOpen) {
+        panel.classList.add("is-open");
+        btn.classList.add("is-active");
+        var dateInput = panel.querySelector('input[type="date"]');
+        if (dateInput) dateInput.focus();
+      }
+    });
+  });
+
+  document.querySelectorAll(".js-schedule-cancel").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var panel = btn.closest(".dash-row__scheduler");
+      if (panel) panel.classList.remove("is-open");
+      var row = btn.closest(".dash-row");
+      if (row) {
+        var toggle = row.querySelector(".js-schedule-toggle");
+        if (toggle) toggle.classList.remove("is-active");
+      }
+    });
+  });
+})();
+</script>
+{% endblock %}

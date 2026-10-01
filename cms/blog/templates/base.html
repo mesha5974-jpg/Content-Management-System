@@ -21,6 +21,10 @@
     <div class="wrap masthead__row">
       <a class="masthead__title" href="{% url 'home' %}">Marginalia</a>
       <nav class="masthead__nav" aria-label="Primary">
+        {% if  user.is_authenticated %}
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+         {% endif %}
+            
         <a href="{% url 'write' %}">Writing</a>
         {% if request.user.user_type == 'admin' %}
         <a href="{% url 'comment_moderation' %}">Approval</a>

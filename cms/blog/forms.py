@@ -20,8 +20,6 @@ class PostForm(forms.ModelForm):
             "slug",
             "content",
             "image",
-            "status",
-            "scheduled_at",
             "featured",
             "tags",
         ]

@@ -24,8 +24,10 @@ urlpatterns = [
     path("reject/<int:pk>/",views.RejectCommentView.as_view(),name="reject_comment"),
     path("tag/<slug:slug>/",views.TagPostView.as_view(),name="tag_posts"),
     path("rss/",views.LatestPostsFeed(),name="rss_feed"),
-    path("sitemap.xml",sitemap,{"sitemaps": sitemaps},name="sitemap"
-),
+    path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
+    path("posts/<slug:slug>/publish/", views.PublishPostView.as_view(), name="post_publish"),
+    path("posts/<slug:slug>/schedule/", views.SchedulePostView.as_view(), name="post_schedule"),
+    path("sitemap.xml",sitemap,{"sitemaps": sitemaps},name="sitemap"),
 
 
 

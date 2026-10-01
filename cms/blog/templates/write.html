@@ -24,7 +24,7 @@ Write Post · Marginalia
 
         <p class="write__breadcrumb">
       
-            <a href="{% url 'home' %}">Dashboard</a>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
             /{% if object %}
 
              Edit Post
@@ -232,33 +232,56 @@ Write Post · Marginalia
 
             <h3>Publish</h3>
 
-            <div class="form-group">
+<div id="schedule-fields" class="schedule-fields">
 
-                <label for="{{ form.status.id_for_label }}">
-                    Status
-                </label>
+    <div class="schedule-field">
+        <label for="scheduled_date">
+            Schedule Date
+        </label>
 
-                {{ form.status }}
-                {{ form.status.errors }}
+        <input type="date"
+               name="scheduled_date"
+               id="scheduled_date">
 
-            </div>
+    </div>
 
+    <div class="schedule-field">
+        <label for="scheduled_time">
+            Schedule Time
+        </label>
 
-            <div
-                class="form-group"
-                id="scheduled-at-group"
-            >
+        <input type="time"
+               name="scheduled_time"
+               id="scheduled_time">
 
-                <label for="{{ form.scheduled_at.id_for_label }}">
-                    Scheduled At
-                </label>
+    </div>
 
-                {{ form.scheduled_at }}
-                {{ form.scheduled_at.errors }}
+</div>
 
-            </div>
+<div class="form-actions">
 
+    <button type="submit"
+            name="action"
+            value="draft"
+            class="btn btn-secondary">
+        Save Draft
+    </button>
 
+    <button type="submit"
+            name="action"
+            value="published"
+            class="btn btn-primary">
+        Publish Now
+    </button>
+
+    <button type="submit"
+            name="action"
+            value="scheduled"
+            class="btn btn-schedule">
+        Schedule Post
+    </button>
+
+</div>
             <div class="form-group checkbox">
 
                 <label>
@@ -298,15 +321,12 @@ Write Post · Marginalia
 
 
         <!-- SAVE -->
+        {% if object %}
         <button
             type="submit"
             class="btn btn-primary"
         >
-
-            {% if object %}
                 Update Post
-            {% else %}
-                Save Post
             {% endif %}
 
         </button>
@@ -327,30 +347,31 @@ Write Post · Marginalia
 {% block extra_js %}
 <script>
 
-    /* Scheduled At visibility */
-    var statusField = document.getElementById("id_status");
-    var scheduledAtGroup = document.getElementById("scheduled-at-group");
+document.getElementById("schedule-button").addEventListener("click", function () {
 
-    function toggleScheduledField() {
+    const scheduleFields = document.getElementById("schedule-fields");
 
-        if (!statusField || !scheduledAtGroup) return;
+    if (scheduleFields.style.display === "none") {
+        scheduleFields.style.display = "block";
+        this.textContent = "Confirm Schedule";
+    } else {
 
-        if (statusField.value === "scheduled") {
-            scheduledAtGroup.style.display = "block";
-        } else {
-            scheduledAtGroup.style.display = "none";
+        const date = document.getElementById("scheduled_date").value;
+        const time = document.getElementById("scheduled_time").value;
+
+        if (!date || !time) {
+            alert("Please select both date and time.");
+            return;
         }
+
+        const form = this.closest("form");
+
+        form.action = "{% url 'post_schedule' post.slug %}";
+        form.method = "post";
+
+        form.submit();
     }
-
-    toggleScheduledField();
-
-    if (statusField) {
-        statusField.addEventListener(
-            "change",
-            toggleScheduledField
-        );
-    }
-
+});
 
     /* CKEditor 4 Word Count */
 
